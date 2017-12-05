@@ -1,0 +1,9 @@
+scan_interval: 20
+scan_timeout: 20
+buffer_size: 100
+mqtt_address: tcp://localhost:1883
+mqtt_topic: sensors/bluetooth
+mqtt_on_topic: lifecycle/on/btsensor
+mqtt_off_topic: lifecycle/off/btsensor
+scan_duplicate: false
+
