@@ -7,7 +7,7 @@ import (
 
 	"./bleadapter"
 	"./bledata"
-	"./mqttadapter"
+	"./httpadapter"
 )
 
 func main() {
@@ -29,13 +29,16 @@ func main() {
 
 	bledata.OpenChannel(appConfig.BufferSize)
 
-	go mqttadapter.MQTTy(appConfig.MQTTAddress, mqttadapter.Osname, appConfig.MQTTTopic, appConfig.MQTTOffTopic, wg, appConfig.ScanInterval)
+	//go mqttadapter.MQTTy(appConfig.MQTTAddress, mqttadapter.Osname, appConfig.MQTTTopic, appConfig.MQTTOffTopic, wg, appConfig.ScanInterval)
+	// Send Directly to Central Monitoring
+	go httpadapter.SendData2CentralMonitoring(appConfig.API_Url, wg, appConfig.ThrowInterval)
 
 	// github.com/currantlabs/ble
-	//go bleadapter.ScanAndWait(wg, appConfig.ScanTimeout, appConfig.ScanInterval, appConfig.ScanDup)
+	go bleadapter.ScanAndWait(wg, appConfig.ScanTimeout, appConfig.ScanInterval, appConfig.ScanDup)
 
 	// github.com/paypal/gatt
-	go bleadapter.StartScan(wg, appConfig.ScanDup)
+	//go bleadapter.StartScan(wg, appConfig.ScanDup)
+
 	wg.Wait()
 
 }

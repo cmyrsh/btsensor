@@ -53,24 +53,14 @@ func chkErr(err error) {
 }
 
 func advHandler(a ble.Advertisement) {
-	if a.Connectable() {
-		log.Printf("[%s] C %3d:", a.Address(), a.RSSI())
-	} else {
-		log.Printf("[%s] N %3d:", a.Address(), a.RSSI())
-	}
-	comma := ""
-	if len(a.LocalName()) > 0 {
-		log.Printf(" Name: %s", a.LocalName())
-		comma = ","
-	}
-	if len(a.Services()) > 0 {
-		log.Printf("%s Svcs: %v", comma, a.Services())
-		comma = ","
-	}
-	if len(a.ManufacturerData()) > 0 {
-		log.Printf("%s MD: %X", comma, a.ManufacturerData())
-	}
 
+	log.Printf("LocalName:%s Connectable:%t Address[%s] RSSI:%3d Services:%v MD:%X\n",
+		a.LocalName(),
+		a.Connectable(),
+		a.Address(),
+		a.RSSI(),
+		a.Services(),
+		a.ManufacturerData())
 	btd := bledata.BlueToothDevice{}
 
 	btd.BlueToothMAC = a.Address().String()
@@ -78,7 +68,6 @@ func advHandler(a ble.Advertisement) {
 	btd.ManufacturerData = hex.EncodeToString(a.ManufacturerData())
 
 	bledata.PushData(btd)
-	log.Printf("\n")
 }
 
 type bleDummy struct {
