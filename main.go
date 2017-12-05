@@ -1,12 +1,13 @@
 package main
 
 import (
-	"./bleadapter"
-	"./mqttadapter"
-	"./bledata"
 	"flag"
-	"sync"
 	"log"
+	"sync"
+
+	"./bleadapter"
+	"./bledata"
+	"./mqttadapter"
 )
 
 func main() {
@@ -32,7 +33,6 @@ func main() {
 
 	// github.com/currantlabs/ble
 	//go bleadapter.ScanAndWait(wg, appConfig.ScanTimeout, appConfig.ScanInterval, appConfig.ScanDup)
-
 
 	// github.com/paypal/gatt
 	go bleadapter.StartScan(wg, appConfig.ScanDup)

@@ -1,0 +1,50 @@
+# Install Mosquitto
+
+sudo aptitude update
+sudo apt-dist upgrade
+sudo aptitude install mosquitto
+
+
+rm -rf executables/* && GOARM=6 GOARCH=arm GOOS=linux go build -o executables/ble_currentlabs && scp executables/ble_currentlabs pi@192.168.178.25:poc_tibco
+rm -rf executables/* && GOARM=6 GOARCH=arm GOOS=linux go build -o executables/ble_gatt && scp executables/ble_gatt pi@192.168.178.25:poc_tibco
+
+raspberry ssh rbry0001
+
+
+logs
+--
+2017/11/25 00:06:07 Scanning for 39...
+2017/11/25 00:06:27 [44:e7:5b:f8:47:06] C -96:
+2017/11/25 00:06:27  MD: 4C0010050A101F696A
+2017/11/25 00:06:27
+
+
+{
+   "ScannerId":"raspberrypi",
+   "ScanTimeStart":151156480745513,
+   "ScanTimeEnd":151156480745513,
+   "DeviceList":[
+      {
+         "BlueToothMAC":"44:e7:5b:f8:47:06",
+         "SignalStrengthIndB":0
+      },
+      {
+         "BlueToothMAC":"44:e7:5b:f8:47:06",
+         "SignalStrengthIndB":0
+      }
+   ]
+}
+
+
+Run
+
+nohup sudo ./ble_currentlabs -config config_currentlabs.yaml  >/dev/null 2>&1 &
+nohup sudo ./ble_gatt -config config_gatt.yaml  >/dev/null 2>&1 &
+
+nohup ./blue-tooth-data_linux_arm_2cloud >/dev/null 2>&1 &
+
+
+pi@raspberrypi:~/poc_tibco $ nohup ./blue-tooth-data_linux_arm_2cloud >/dev/null 2>&1 &
+[1] 15486
+pi@raspberrypi:~/poc_tibco $ nohup sudo ./ble_currentlabs -config config_currentlabs.yaml  >/dev/null 2>&1 &
+[2] 15542

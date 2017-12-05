@@ -1,15 +1,19 @@
 package bleadapter
 
 import (
+	"encoding/hex"
+	"log"
+	"sync"
+
 	"../bledata"
 	gatt "github.com/paypal/gatt"
 	gattoption "github.com/paypal/gatt/examples/option"
-	"log"
-	"sync"
 )
+
 var (
 	scanDup = false
 )
+
 func onStateChanged(d gatt.Device, s gatt.State) {
 	log.Println("State:", s)
 	switch s {
@@ -22,14 +26,13 @@ func onStateChanged(d gatt.Device, s gatt.State) {
 	}
 }
 
-
 func onPeriphDiscovered(p gatt.Peripheral, a *gatt.Advertisement, rssi int) {
+
 	log.Printf("\nPeripheral ID:%s, NAME:(%s), RSSI: %d\n", p.ID(), p.Name(), p.ReadRSSI())
 	log.Println("  Local Name        =", a.LocalName)
 	log.Println("  TX Power Level    =", a.TxPowerLevel)
 	log.Println("  Manufacturer Data =", a.ManufacturerData)
 	log.Println("  Service Data      =", a.ServiceData)
-
 
 	// Create BluetoohDevice Object
 
@@ -37,11 +40,9 @@ func onPeriphDiscovered(p gatt.Peripheral, a *gatt.Advertisement, rssi int) {
 
 	bldevice.BlueToothMAC = string(p.ID())
 	bldevice.SignalStrengthIndB = p.ReadRSSI()
-	bldevice.ManufacturerData = string(a.ManufacturerData)
-
+	bldevice.ManufacturerData = hex.EncodeToString(a.ManufacturerData)
 
 	bledata.PushData(bldevice)
-
 
 }
 

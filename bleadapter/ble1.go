@@ -2,17 +2,18 @@ package bleadapter
 
 import (
 	"context"
+	"encoding/hex"
 	"log"
 	"time"
+
+	"sync"
 
 	"../bledata"
 	"github.com/currantlabs/ble"
 	"github.com/currantlabs/ble/examples/lib/dev"
-	"gobot.io/x/gobot"
-	"sync"
 	"github.com/pkg/errors"
+	"gobot.io/x/gobot"
 )
-
 
 func ScanAndWait(wg sync.WaitGroup, scanInterval int, loopInterval int, dupok bool) {
 
@@ -20,10 +21,10 @@ func ScanAndWait(wg sync.WaitGroup, scanInterval int, loopInterval int, dupok bo
 
 	work := func() {
 
-		gobot.Every(time.Duration(loopInterval) * time.Second, func() {
+		gobot.Every(time.Duration(loopInterval)*time.Second, func() {
 			// Scan for specified durantion, or until interrupted by user.
 			log.Printf("Scanning for %d...\n", scanInterval)
-			ctx := ble.WithSigHandler(context.WithTimeout(context.Background(), time.Duration(scanInterval) * time.Second))
+			ctx := ble.WithSigHandler(context.WithTimeout(context.Background(), time.Duration(scanInterval)*time.Second))
 			chkErr(ble.Scan(ctx, dupok, advHandler, nil))
 
 		})
@@ -31,7 +32,7 @@ func ScanAndWait(wg sync.WaitGroup, scanInterval int, loopInterval int, dupok bo
 	}
 
 	ble_dummy := bleDummy{
-		name1:"hci0",
+		name1: "hci0",
 	}
 
 	robot := gobot.NewRobot(ble_dummy.Name(), []gobot.Connection{ble_dummy}, work)
@@ -74,15 +75,14 @@ func advHandler(a ble.Advertisement) {
 
 	btd.BlueToothMAC = a.Address().String()
 	btd.SignalStrengthIndB = a.RSSI()
-	btd.ManufacturerData = string(a.ManufacturerData())
-
+	btd.ManufacturerData = hex.EncodeToString(a.ManufacturerData())
 
 	bledata.PushData(btd)
 	log.Printf("\n")
 }
 
 type bleDummy struct {
-	bd ble.Device
+	bd    ble.Device
 	name1 string
 }
 
