@@ -6,4 +6,5 @@ mqtt_topic: sensors/bluetooth
 mqtt_on_topic: lifecycle/on/btsensor
 mqtt_off_topic: lifecycle/off/btsensor
 scan_duplicate: false
-
+throw_interval: 45
+API_Url: http://localhost:9091/phoneDetection
